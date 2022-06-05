@@ -1,0 +1,38 @@
+public class Solution {
+    public static boolean subsetSumToK(int n, int k, int arr[]){
+        // Write your code here.
+          // Write your code here.
+       int sum = 0;
+        for(int i = 0; i<n; i++){
+            sum += arr[i];
+        }
+        if(sum == k)
+            return true;
+        //make dp table
+        boolean[][] dp = new boolean[n+1][k+1];
+        
+        //intialization
+        
+        //if(k == 0) then any number of elements can form the sum
+        
+        for(int i = 0; i<=n; i++)
+            dp[i][0] = true;
+        
+        //if(number of elements in array is zero then it is not possible to form k)
+        
+        for(int i = 0; i<=k; i++)
+            dp[0][i] = false;
+        
+        for(int i = 1; i<=n; i++){
+            for(int j = 1; j<=k; j++){
+                //if(element at i-1 index in array is greater the our j sum)
+                if(j < arr[i-1])
+                    dp[i][j] = dp[i-1][j];
+                else
+                    dp[i][j] = dp[i-1][j] || dp[i-1][j-arr[i-1]];
+            }
+        }
+        
+        return dp[n][k];
+    }
+}
