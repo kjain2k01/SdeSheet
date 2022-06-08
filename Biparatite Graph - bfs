@@ -1,0 +1,42 @@
+
+class Solution
+{
+    public boolean isBipartite(int V, ArrayList<ArrayList<Integer>>adj)
+    {
+        // Code here
+        //using bfs
+        int[] colors = new int[V];
+        Arrays.fill(colors, -1);
+        
+        for(int i = 0; i<V; i++){
+            if(colors[i] == -1)
+                if(!bfs(i, adj, colors))
+                    return false;
+        }
+        return true;
+    }
+    
+    static boolean bfs(int node, ArrayList<ArrayList<Integer>> adj, int[] colors){
+        Queue<Integer> q = new LinkedList<>();
+        //give it color 1 to node;
+        colors[node] = 1;
+        
+        q.add(node);
+        
+        while(!q.isEmpty()){
+            int currNode = q.poll();
+            for(Integer adjNodes : adj.get(currNode)){
+                //if the color is not assigned to the adjNodes
+                if(colors[adjNodes] == -1)
+                {
+                    //give it color
+                    colors[adjNodes] = 1-colors[currNode];
+                    q.add(adjNodes);
+                }
+                else if(colors[adjNodes] == colors[currNode])
+                    return false;
+            }
+        }
+        return true;
+    }
+}
