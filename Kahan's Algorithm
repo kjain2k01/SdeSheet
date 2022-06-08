@@ -1,0 +1,50 @@
+
+/*Complete the function below*/
+
+class Solution {
+    // Function to detect cycle in a directed graph.
+    public boolean isCyclic(int V, ArrayList<ArrayList<Integer>> adj) {
+        // code here
+        //using kahan's Algorithm
+        //indegree concept
+        
+        boolean[] visited = new boolean[V];
+        Arrays.fill(visited, false);
+        
+        //calculate Indegree
+        int[] indegree = new int[V];
+        Arrays.fill(indegree, 0);
+        
+        for(int i = 0; i<V; i++){
+            for(Integer adjNodes : adj.get(i))
+            {
+                indegree[adjNodes]++;
+            }
+        }
+        
+        Queue<Integer> q = new LinkedList<Integer>();
+        int count = 0;
+        for(int i = 0; i<indegree.length; i++)
+        {
+            if(indegree[i] == 0)
+                q.add(i);
+        }
+        
+        
+        while(!q.isEmpty()){
+            int node = q.poll();
+            count++;
+            
+            for(Integer adjNodes : adj.get(node)){
+                indegree[adjNodes]--;
+                if(indegree[adjNodes] == 0)
+                    q.add(adjNodes);
+            }
+        }
+        
+        
+        if(count == V)
+            return false;
+        return true;
+    }
+}
