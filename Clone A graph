@@ -1,0 +1,78 @@
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public List<Node> neighbors;
+    public Node() {
+        val = 0;
+        neighbors = new ArrayList<Node>();
+    }
+    public Node(int _val) {
+        val = _val;
+        neighbors = new ArrayList<Node>();
+    }
+    public Node(int _val, ArrayList<Node> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+}
+*/
+
+class Solution {
+    public Node cloneGraph(Node node) {
+        if(node == null)
+            return null;
+        
+        //for checking if a node is already created or not
+        Node[] visited = new Node[101];
+        Arrays.fill(visited, null);
+        
+        Node clone = new Node(node.val);
+   visited[node.val] = clone;
+        
+        //getting adjacent nodes of given node
+        for(Node curr : node.neighbors){
+            //if its adjancent node is not visited
+            if(visited[curr.val] == null){
+                //create new node
+                Node newNode = new Node(curr.val);
+                //add it into the neighbors list of clone //clone graph pointer
+                clone.neighbors.add(newNode);
+                //call dfs for traversing remaining nodes
+                dfs(curr, newNode, visited);
+            }
+            else{
+                //if the adjancent node is visited directly add into the neighbors of clone 
+                clone.neighbors.add(visited[curr.val]);
+            }
+        }
+        return clone;
+    }
+    
+    //curr == original
+    //Clonenode == clone  :: it's clear by name only
+    void dfs(Node curr, Node cloneNode, Node[] visited){
+      //mark cloneNode to be visited
+        visited[cloneNode.val] = cloneNode;
+        
+        //now traverse the adjacent nodes of curr node(original grpah)
+        for(Node nextCurr : curr.neighbors){
+            //now let's see if the nextCurr is visited or not
+            if(visited[nextCurr.val] == null){
+                //create new node of corresponding nextCurr
+                Node newCloneNode = new Node(nextCurr.val);
+                
+                //add it into the adjacent/neighbors of cloneNode
+                cloneNode.neighbors.add(newCloneNode);
+                
+                //call again dfs
+                //pass nextCurr, newCloneNode, visited
+                dfs(nextCurr, newCloneNode, visited);
+            }
+            else // if it is already visited add it into the neighbors of cloneNode
+            {
+                cloneNode.neighbors.add(visited[nextCurr.val]);
+            }
+        }
+    }
+}
