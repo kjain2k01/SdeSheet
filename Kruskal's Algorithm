@@ -1,0 +1,60 @@
+class Solution
+{
+    //kruskals Algorithm
+    //Function to find sum of weights of edges of the Minimum Spanning Tree.
+    static int spanningTree(int V, ArrayList<ArrayList<ArrayList<Integer>>> adj) 
+    {
+        // Add your code here
+        PriorityQueue<Node> pq = new PriorityQueue<>(V, new Node());
+        
+        int[] parent = new int[V];
+        int[] rank = new int[V];
+        
+        for(int i = 0; i<V;i++){
+            parent[i] = i;
+            rank[i] = 0;
+        }
+        
+        for(int i = 0; i<V;i++){
+            for(ArrayList<Integer> list : adj.get(i)){
+                int v = list.get(0);
+                int wt = list.get(1);
+                pq.offer(new Node(i, v, wt));
+            }
+        }
+        int costSum = 0;
+        while(!pq.isEmpty()){
+            Node node = pq.poll();
+            if((findParent(node.u, parent)) != (findParent(node.v, parent))){
+                costSum += node.wt;
+                union(node.u, node.v, parent, rank);
+            }
+        }
+        return costSum;
+    }
+    
+    static int findParent(int i, int[] parent){
+        if(parent[i] != i){
+            parent[i] = findParent(parent[i], parent);
+        }
+        return parent[i];
+    }
+    
+    static void union(int a, int b, int[] parent, int[]rank){
+        int aroot = findParent(a, parent);
+        int broot = findParent(b, parent);
+        if(aroot != broot){
+            if(rank[aroot] > rank[broot]){
+                parent[broot] = aroot;
+            }
+            else if(rank[aroot] < rank[broot]){
+                parent[aroot] = broot;
+            }
+            else{
+                parent[aroot] = broot;
+                rank[broot] += 1;
+            }
+        }
+    }
+}
+T.C. O(V+E)log(V+E)
