@@ -1,0 +1,90 @@
+
+class Node implements Comparator<Node>{
+    private int vertex;
+    private int cost;
+    
+    Node(){
+        
+    }
+    
+    Node(int cost, int vertex){
+        this.vertex = vertex;
+        this.cost = cost;
+    }
+    
+    public int compare(Node n1, Node n2){
+        //because for finding the minimum at the top of the Priority Queue
+        if(n1.cost < n2.cost)
+            return -1;
+        else if(n1.cost > n2.cost)
+            return 1;
+        else 
+            return 0;
+    }
+    
+    int getVertex(){
+        return vertex;
+    }
+    
+    int getCost(){
+        return cost;
+    }
+}
+
+class Solution
+{
+    //Function to find sum of weights of edges of the Minimum Spanning Tree.
+    static int spanningTree(int V, ArrayList<ArrayList<ArrayList<Integer>>> adj) 
+    {
+        //let's do with Prim's Algorithm 
+        
+        //cost array for finding the minimum cost 
+        int[] cost = new int[V];
+        
+        //MST array for finding if a vertex is a part of our minimum spanning tree
+        boolean[] MST = new boolean[V];
+        
+        Arrays.fill(cost, Integer.MAX_VALUE);
+        Arrays.fill(MST, false);
+        
+        //create Priority Queue for always selecting minimum edge from the adjacent 
+        PriorityQueue<Node> pq = new PriorityQueue<>(new Node()); 
+        
+        
+        //lets start with first vertex i.e 0
+        cost[0] = 0;
+        
+        //add first/source vertex in our priorityqueue
+        pq.offer(new Node(0, 0));
+        
+        while(!pq.isEmpty()){
+            Node node = pq.poll();
+            
+            int u = node.getVertex();
+            MST[u] = true;
+            
+            //now see the adjacent node
+            
+            ArrayList<ArrayList<Integer>> lists = adj.get(u);
+            
+            for(ArrayList<Integer> list : lists){
+                int adjVertex = list.get(0); //soruce(u) --> dest(V)
+                int adjCost = list.get(1);//cost
+                
+                //let's check
+                if(MST[adjVertex] == false && cost[adjVertex] > adjCost){
+                    cost[adjVertex] = adjCost;
+                    pq.add(new Node(adjCost, adjVertex));
+                }
+            }
+        }
+        
+        int costsum = 0;
+        for(int costs : cost)
+            costsum += costs;
+        
+    return costsum;
+    }
+}
+
+Time Complexity : O((V+E)log(V+E));
