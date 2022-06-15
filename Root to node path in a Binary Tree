@@ -1,0 +1,26 @@
+class Solution{
+    static ArrayList<Integer> getPath(TreeNode node, int x){
+        ArrayList<Integer> ans = new ArrayList<Integer>();
+        boolean hasPath = hasPath(node, x, ans);
+        if(hasPath)
+            return ans;
+         return new ArrayList<>();
+    }
+    
+    static boolean hasPath(TreeNode node, int x, ArrayList<Integer> ans){
+      if(root == null)
+          return false;
+        
+        ans.add(root.data);
+        
+        if(root.data == x)
+            return true;
+        
+        if(hasPath(root.left, x, ans) || hasPath(root.right,x, ans))
+             return true;
+        
+        //if tree doesn't have path to our required value;
+         ans.remove(ans.size() - 1);
+         return false;
+    }
+ }
