@@ -1,0 +1,50 @@
+
+class Pair{
+    TreeNode node;
+    int index;
+    
+    Pair(TreeNode node, int index){
+        this.node = node;
+        this.index = index;
+        
+    }
+}
+class Solution {
+    public int widthOfBinaryTree(TreeNode root) {
+        //it is difficult one
+        
+        if(root == null)
+            return 0;
+        
+        int ans = 0;
+        
+        Queue<Pair> q = new LinkedList<>();
+        q.offer(new Pair(root, 0));
+        
+        while(!q.isEmpty()){
+            int size = q.size();
+            int currMin = q.peek().index;
+            int leftMost = 0, rightMost = 0;
+            
+            for(int i = 0; i<size; i++){
+                int currIndex = q.peek().index - currMin;
+                TreeNode node = q.peek().node;
+                q.poll();
+                if(i == 0)
+                    leftMost = currIndex;
+                if(i == size-1)
+                    rightMost = currIndex;
+            
+                if(node.left != null)
+                    q.offer(new Pair(node.left, currIndex * 2 + 1));
+                
+                if(node.right != null)
+                    q.offer(new Pair(node.right, currIndex * 2 + 2));
+            }
+            
+            ans = Math.max(ans, rightMost - leftMost + 1);
+        }
+        
+        return ans;
+    }
+}
