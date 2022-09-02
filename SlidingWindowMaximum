@@ -1,0 +1,59 @@
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+/*
+Using Dequeue
+Thinking : 
+            1. Create a dequeue of size k
+            2. In dequeue we will only put the element which fullfill our requirements
+            3. For each window, only store the maximum element of window 
+            4. add the element at the front end of the deque in our answer
+        */
+        
+        //for storing the indexes of the elements which are required
+        Deque<Integer> dq = new LinkedList<>();
+        
+        ArrayList<Integer> ans = new ArrayList<>();//for storing the maximum from each window
+        
+        int i = 0;
+        //Processing the first window
+        for(i = 0; i<k; i++){
+            //removing elements from the deque which is not greater than nums[i]
+            while(!dq.isEmpty() && nums[dq.peekLast()] <= nums[i])
+                dq.removeLast(); // removing from rear
+            
+            dq.addLast(i);
+        }
+        
+        for(; i<nums.length; i++){
+            //storing the maximum of every sliding window in our arraylist;
+            ans.add(nums[dq.peek()]);
+         
+            //first check if our deque contains indexes which is out of our present window range
+            while(!dq.isEmpty() && dq.peek() <= i-k)
+                dq.removeFirst();
+            
+            //now adding the maximum in our queue
+            
+            //removing elements from the deque which is not greater than nums[i]
+            while(!dq.isEmpty() && nums[dq.peekLast()] <= nums[i])
+                dq.removeLast();
+            //adding the index of maximum
+            dq.addLast(i);
+        }
+        
+        //adding the maximum of our last window
+         ans.add(nums[dq.peek()]);
+       
+        //becuase i use arraylist 
+        int[] result = new int[ans.size()];
+        int j = 0;
+        while(j<ans.size()){
+            result[j] = ans.get(j);
+            j++;
+        }
+        return result;
+        
+        //Time complexity - O(n);
+        //Space complexity - O(n) - because i use arrayList, if you use array only it will be of O(k)(only deque space will be considered)
+    }
+}
