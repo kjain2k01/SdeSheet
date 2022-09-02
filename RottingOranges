@@ -1,0 +1,82 @@
+class Pair{
+    int x ;
+    int y;
+    
+    Pair(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+}
+/*
+BFS will be more helpful here because when we found a rotten orange, first we rot all the oranges 4-directionally adjacent to it.
+*/
+class Solution {
+    public int orangesRotting(int[][] grid) {
+        
+        int time = 0;
+        int freshOrange = 0;
+        
+        int n = grid.length;
+        int m = grid[0].length;
+        Queue<Pair> q = new LinkedList<>();
+        
+    
+        for(int i = 0; i<n; i++){
+            for(int j = 0; j<m; j++){
+                if(grid[i][j] == 2)
+                    q.offer(new Pair(i, j));
+                else if(grid[i][j] == 1)
+                    freshOrange++;
+            }
+        }
+        //if we don't find any fresh orange
+        if(freshOrange == 0)
+            return 0;
+        
+        int[] ax = new int[]{1,-1,0,0};
+        int[] ay = new int[]{0,0,1,-1};
+        
+        while(!q.isEmpty()){
+            int size = q.size();
+            boolean isRotted = false;
+            
+            while(size != 0){
+                Pair p =  q.poll();
+                for(int j = 0; j<4; j++){
+                    //checking it's 4-directionally adjacent oranges
+                    int x = p.x + ax[j];
+                    int y = p.y + ay[j];
+                    
+                    if(isValid(x, y, n, m, grid)){
+                        grid[x][y] = 2;
+                        //if this orange can rot any other orange
+                       isRotted = true;
+                        q.offer(new Pair(x,y));
+                    }
+                }
+                size--;
+            }
+            //means one or more than one oranges are rotten, in particular iteration so increase the time
+            if(isRotted)
+                time++;
+        }
+        
+        
+        for(int i = 0; i<n; i++){
+            for(int j = 0; j<m; j++){
+                //if we found any fresh oranges are left or not
+                if(grid[i][j] == 1)
+                    time = 0;
+            }
+        }
+        
+        return time == 0 ? -1 : time;
+    }
+    
+    private boolean isValid(int x, int y, int n, int m, int[][] grid){
+        if(x < n && x>= 0 && y < m && y>= 0 && grid[x][y] == 1)
+            return true;
+        else 
+            return false;
+    }
+}
