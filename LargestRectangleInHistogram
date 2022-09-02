@@ -1,0 +1,59 @@
+class Solution {
+    
+    
+    static ArrayList<Integer> nextSmallerElement(int[] arr, int n){
+   
+       ArrayList<Integer> ans = new ArrayList<Integer>(n);
+        Stack<Integer> stack = new Stack<>();
+        stack.push(-1);
+         for(int i = n-1 ; i>=0; i--){
+            int curr = arr[i];
+            while((stack.peek() != -1) && (arr[stack.peek()]>= curr)){
+                stack.pop();
+            }
+            ans.add(stack.peek());
+            
+        
+            stack.push(i);
+        }
+        Collections.reverse(ans);
+        return ans;
+    }
+    
+    static ArrayList<Integer> prevSmallerElement(int[] arr, int n){
+   
+       ArrayList<Integer> ans = new ArrayList<Integer>(n);
+        Stack<Integer> stack = new Stack<>();
+        stack.push(-1);
+        for(int i = 0 ; i<n; i++){
+            int curr = arr[i];
+            while((stack.peek() != -1) && arr[stack.peek()]>= curr){
+                stack.pop();
+            }
+            ans.add(stack.peek());
+        
+            stack.push(i);
+        }
+        //Collections.reverse(ans);
+        return ans;
+    }
+    
+    
+    public int largestRectangleArea(int[] heights) {
+        ArrayList<Integer> next = new ArrayList<Integer>();
+        ArrayList<Integer> prev = new ArrayList<Integer>(); 
+            next = nextSmallerElement(heights, heights.length);
+            prev = prevSmallerElement(heights, heights.length);
+            int breadth, length;
+        int area = -999;
+                for(int i = 0; i<heights.length;i++){
+                         length = heights[i];
+                    if(next.get(i) == -1)
+                        next.set(i, heights.length);
+                breadth = next.get(i) - prev.get(i) - 1;
+                   int newArea = length * breadth;
+                    area = Math.max(area, newArea);
+                }
+        return area;
+        }
+}
